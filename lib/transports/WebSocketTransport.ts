@@ -1,19 +1,18 @@
-import WS from "isomorphic-ws";
 import { Transport } from "./Transport";
-import { JSONRPCRequestData, getNotifications, getBatchRequests } from "../Request";
-import { JSONRPCError, ERR_UNKNOWN } from "../Error";
+import { JSONRPCRequestData, getNotifications, getBatchRequests } from "../request";
+import { JSONRPCError, ERR_UNKNOWN } from "../error";
 
 class WebSocketTransport extends Transport {
-  public connection: WS;
+  public connection: WebSocket;
   public uri: string;
 
   constructor(uri: string) {
     super();
     this.uri = uri;
-    this.connection = new WS(uri);
+    this.connection = new WebSocket(uri);
   }
   public connect(): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const cb = () => {
         this.connection.removeEventListener("open", cb);
         resolve();

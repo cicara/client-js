@@ -1,6 +1,2 @@
-build
-/**/build
-**/docs
-.DS_Store
+dist/
 node_modules
-coverage

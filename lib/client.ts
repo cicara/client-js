@@ -1,7 +1,7 @@
-import RequestManager from "./RequestManager";
-import { JSONRPCError } from "./Error";
-import { IClient, RequestArguments, NotificationArguments } from "./ClientInterface";
-import { IJSONRPCNotification } from "./Request";
+import RequestManager from "./request-messager";
+import { JSONRPCError } from "./error";
+import { IClient, RequestArguments, NotificationArguments } from "./client-interface";
+import { IJSONRPCNotification } from "./request";
 
 /**
  * OpenRPC Client JS is a browser-compatible JSON-RPC client with multiple transports and

@@ -1,11 +1,6 @@
-import fetch from "isomorphic-fetch";
 import { Transport } from "./Transport";
-import {
-  JSONRPCRequestData,
-  getNotifications,
-  getBatchRequests,
-} from "../Request";
-import { ERR_UNKNOWN, JSONRPCError } from "../Error";
+import { JSONRPCRequestData, getNotifications, getBatchRequests } from "../request";
+import { ERR_UNKNOWN, JSONRPCError } from "../error";
 
 type CredentialsOption = "omit" | "same-origin" | "include";
 
@@ -20,21 +15,20 @@ class HTTPTransport extends Transport {
   private readonly credentials?: CredentialsOption;
   private readonly headers: Headers;
   private readonly injectedFetcher?: typeof fetch;
+
   constructor(uri: string, options?: HTTPTransportOptions) {
     super();
     this.uri = uri;
-    this.credentials = options && options.credentials;
+    this.credentials = options?.credentials;
     this.headers = HTTPTransport.setupHeaders(options && options.headers);
     this.injectedFetcher = options?.fetcher;
   }
+
   public connect(): Promise<any> {
     return Promise.resolve();
   }
 
-  public async sendData(
-    data: JSONRPCRequestData,
-    timeout: number | null = null
-  ): Promise<any> {
+  public async sendData(data: JSONRPCRequestData, timeout: number | null = null): Promise<any> {
     const prom = this.transportRequestManager.addRequest(data, timeout);
     const notifications = getNotifications(data);
     const batch = getBatchRequests(data);
@@ -60,15 +54,9 @@ class HTTPTransport extends Transport {
         return Promise.reject(responseErr);
       }
     } catch (e) {
-      const responseErr = new JSONRPCError(e.message, ERR_UNKNOWN, e);
-      this.transportRequestManager.settlePendingRequest(
-        notifications,
-        responseErr
-      );
-      this.transportRequestManager.settlePendingRequest(
-        getBatchRequests(data),
-        responseErr
-      );
+      const responseErr = new JSONRPCError((e as any).message, ERR_UNKNOWN, e);
+      this.transportRequestManager.settlePendingRequest(notifications, responseErr);
+      this.transportRequestManager.settlePendingRequest(getBatchRequests(data), responseErr);
       return Promise.reject(responseErr);
     }
     return prom;
@@ -79,11 +67,7 @@ class HTTPTransport extends Transport {
 
   private onlyNotifications = (data: JSONRPCRequestData) => {
     if (data instanceof Array) {
-      return data.every(
-        (datum) =>
-          datum.request.request.id === null ||
-          datum.request.request.id === undefined
-      );
+      return data.every((datum) => datum.request.request.id === null || datum.request.request.id === undefined);
     }
     return data.request.id === null || data.request.id === undefined;
   };

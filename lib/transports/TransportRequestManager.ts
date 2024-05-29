@@ -1,10 +1,14 @@
 import {
-  JSONRPCRequestData, IJSONRPCRequest,
-  IJSONRPCNotification, IJSONRPCNotificationResponse,
-  IJSONRPCResponse, IBatchRequest, IJSONRPCData,
-} from "../Request";
+  JSONRPCRequestData,
+  IJSONRPCRequest,
+  IJSONRPCNotification,
+  IJSONRPCNotificationResponse,
+  IJSONRPCResponse,
+  IBatchRequest,
+  IJSONRPCData,
+} from "../request";
 import { EventEmitter } from "events";
-import { JSONRPCError, ERR_TIMEOUT, ERR_UNKNOWN, ERR_MISSIING_ID, convertJSONToRPCError } from "../Error";
+import { JSONRPCError, ERR_TIMEOUT, ERR_UNKNOWN, ERR_MISSIING_ID, convertJSONToRPCError } from "../error";
 import { promiseResolve, promiseReject, TransportEventChannel, TransportResponse, IRequestPromise } from "./Transport";
 export interface IPendingRequest {
   resolve: promiseResolve;
@@ -45,14 +49,14 @@ export class TransportRequestManager {
       }
       resolver.resolve();
       // Notifications have no response and should clear their own pending requests
-      if(req.request.id === null || req.request.id === undefined){
+      if (req.request.id === null || req.request.id === undefined) {
         delete this.pendingRequest[req.internalID];
       }
     });
   }
 
   public isPendingRequest(id: string | number): boolean {
-    return this.pendingRequest.hasOwnProperty(id)
+    return this.pendingRequest.hasOwnProperty(id);
   }
 
   public resolveResponse(payload: string, emitError: boolean = true): TransportResponse {
@@ -97,7 +101,9 @@ export class TransportRequestManager {
     if (data instanceof Array) {
       payload = data;
     }
-    return payload.every((datum) => (datum.result !== undefined || datum.error !== undefined || datum.method !== undefined));
+    return payload.every(
+      (datum) => datum.result !== undefined || datum.error !== undefined || datum.method !== undefined
+    );
   }
 
   private processResult(payload: any, prom: IRequestPromise) {

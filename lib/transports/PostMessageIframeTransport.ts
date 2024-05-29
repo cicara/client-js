@@ -1,5 +1,5 @@
 import { Transport } from "./Transport";
-import { JSONRPCRequestData, IJSONRPCData, getNotifications } from "../Request";
+import { JSONRPCRequestData, IJSONRPCData, getNotifications } from "../request";
 
 class PostMessageIframeTransport extends Transport {
   public uri: string;
@@ -29,10 +29,10 @@ class PostMessageIframeTransport extends Transport {
   }
   private messageHandler = (ev: MessageEvent) => {
     this.transportRequestManager.resolveResponse(JSON.stringify(ev.data));
-  }
+  };
   public connect(): Promise<any> {
     const urlRegex = /^(http|https):\/\/.*$/;
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
       if (!urlRegex.test(this.uri)) {
         reject(new Error("Bad URI"));
       }
@@ -57,7 +57,6 @@ class PostMessageIframeTransport extends Transport {
     el?.remove();
     window.removeEventListener("message", this.messageHandler);
   }
-
 }
 
 export default PostMessageIframeTransport;

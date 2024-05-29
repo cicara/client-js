@@ -1,5 +1,5 @@
 import { Transport } from "./Transport";
-import { JSONRPCRequestData, IJSONRPCData, getNotifications } from "../Request";
+import { JSONRPCRequestData, IJSONRPCData, getNotifications } from "../request";
 
 const openPopup = (url: string) => {
   const width = 400;
@@ -10,7 +10,7 @@ const openPopup = (url: string) => {
   return window.open(
     url,
     "inspector:popup",
-    `left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`,
+    `left=${left},top=${top},width=${width},height=${height},resizable,scrollbars=yes,status=1`
   );
 };
 
@@ -37,11 +37,11 @@ class PostMessageTransport extends Transport {
 
   private messageHandler = (ev: MessageEvent) => {
     this.transportRequestManager.resolveResponse(JSON.stringify(ev.data));
-  }
+  };
 
   public connect(): Promise<any> {
     const urlRegex = /^(http|https):\/\/.*$/;
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
       if (!urlRegex.test(this.uri)) {
         reject(new Error("Bad URI"));
       }
@@ -67,7 +67,6 @@ class PostMessageTransport extends Transport {
       (this.frame as Window).close();
     }
   }
-
 }
 
 export default PostMessageTransport;

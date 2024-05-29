@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { Transport } from "./Transport";
-import { JSONRPCRequestData, getNotifications } from "../Request";
-import { JSONRPCError, ERR_UNKNOWN } from "../Error";
+import { JSONRPCRequestData, getNotifications } from "../request";
+import { JSONRPCError, ERR_UNKNOWN } from "../error";
 
 class EventEmitterTransport extends Transport {
   public connection: EventEmitter;
@@ -31,7 +31,7 @@ class EventEmitterTransport extends Transport {
       this.transportRequestManager.settlePendingRequest(notifications);
       return prom;
     } catch (e) {
-      const responseErr = new JSONRPCError(e.message, ERR_UNKNOWN, e);
+      const responseErr = new JSONRPCError((e as Error).message, ERR_UNKNOWN, e);
       this.transportRequestManager.settlePendingRequest(notifications, responseErr);
       return Promise.reject(responseErr);
     }

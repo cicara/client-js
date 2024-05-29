@@ -1,4 +1,4 @@
-import { IJSONRPCNotification } from "./Request";
+import { IJSONRPCNotification } from "./request";
 
 interface Arguments {
   readonly method: string;

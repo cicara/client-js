@@ -1,12 +1,7 @@
-import {
-  JSONRPCRequestData,
-  IJSONRPCNotificationResponse,
-  IJSONRPCResponse,
-} from "../Request";
+import { JSONRPCRequestData, IJSONRPCNotificationResponse, IJSONRPCResponse } from "../request";
 
-import StrictEventEmitter from "strict-event-emitter-types";
 import { EventEmitter } from "events";
-import { JSONRPCError } from "../Error";
+import { JSONRPCError } from "../error";
 import { TransportRequestManager } from "./TransportRequestManager";
 
 interface ITransportEvents {
@@ -17,7 +12,7 @@ interface ITransportEvents {
 }
 
 type TransportEventName = keyof ITransportEvents;
-export type TransportEventChannel = StrictEventEmitter<EventEmitter, ITransportEvents>;
+export type TransportEventChannel = EventEmitter;
 
 export abstract class Transport {
   protected transportRequestManager: TransportRequestManager;
@@ -25,12 +20,12 @@ export abstract class Transport {
     this.transportRequestManager = new TransportRequestManager();
     // add a noop for the error event to not require handling the error event
     // tslint:disable-next-line:no-empty
-    this.transportRequestManager.transportEventChannel.on("error", () => { });
+    this.transportRequestManager.transportEventChannel.on("error", () => {});
   }
 
   public abstract connect(): Promise<any>;
   public abstract close(): void;
-  public abstract async sendData(data: JSONRPCRequestData, timeout?: number | null): Promise<any>;
+  public abstract sendData(data: JSONRPCRequestData, timeout?: number | null): Promise<any>;
 
   public subscribe(event: TransportEventName, handler: ITransportEvents[TransportEventName]) {
     this.transportRequestManager.transportEventChannel.addListener(event, handler);
